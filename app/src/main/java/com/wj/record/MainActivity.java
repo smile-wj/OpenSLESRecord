@@ -46,8 +46,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.play).setOnClickListener(this);
         findViewById(R.id.pause).setOnClickListener(this);
         applyPermission();
-
-//        thread();
     }
 
     @Override
@@ -62,24 +60,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else {
 //            setupView();
         }
-    }
-
-    private void thread() {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    Log.d("recoder", "Thread start 111");
-                    startRecord();
-                    Thread.sleep(10 * 1000);
-                    Log.d("recoder", "Thread end 222");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // TODO Auto-generated method stub
-            }
-        }).start();
     }
 
     @Override
@@ -109,7 +89,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     playing = false;
                 }
                 stopPlay();
-
                 break;
         }
     }
@@ -135,40 +114,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-    public void startRecord() {
-
-        //采样频率
-        int sampleRateInHz = 44100;
-
-        //采样精度
-        int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
-
-        //声道数
-        int channelConfig = AudioFormat.CHANNEL_OUT_STEREO;
-
-        if (channels == 6){
-            int channelConfig = AudioFormat.CHANNEL_IN_5POINT1;
-        }
-
-        //录制缓存区大小
-        int bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
-                channelConfig, audioFormat);
-
-        File outFile = new File(getExternalFilesDir(null), "output.pcm");
-
-        audioRecorder.startRecord(sampleRateInHz, channels, audioFormat,
-                bufferSizeInBytes, outFile.getAbsolutePath());
-    }
-
-
     public void startPlay() {
+        Log.d("recoder", "startPlay");
         if (mAudioPlayer == null) {
             mAudioPlayer = new AudioTrackPlayer();
             File outFile = new File(getExternalFilesDir(null), "output.pcm");
             mAudioPlayer.initPlayer(outFile.getAbsolutePath(), 44100, channelConfig, audioFormat);
         }
-        Log.d("recoder", "Play: startPlay");
-
         mAudioPlayer.startPlay();
     }
 
@@ -176,14 +128,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static final String outFile = "/sdcard/record_19700101_21_11_05.pcm";
 
     public void stopPlay() {
+        Log.d("recoder", "stopPlay");
         if (mAudioPlayer != null) {
             mAudioPlayer.stopPlay();
         }
 
 //        File outFile = new File(getExternalFilesDir(null), "output.pcm");
-        Log.d("recoder", "stopPlay");
         convertPcm2Wav(outFile, NewAudioName, sampleRateInHz, 6, 16);
-        Toast.makeText(this, "wav转换结束", Toast.LENGTH_LONG);
         Log.d("recoder", "wav转换结束");
 
     }
